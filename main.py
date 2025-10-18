@@ -20,13 +20,19 @@ def generate_script():
     return msg
 
 # === STEP 2: Fetch a free background clip from Pexels ===
-def get_video_url():
-    url = "https://api.pexels.com/videos/search?query=nature&per_page=1"
-    headers = {"Authorization": os.getenv('PEXELS_API_KEY')}
-    r = requests.get(url, headers=headers)
+def get_video_url_pixabay():
+    url = "https://pixabay.com/api/videos/"
+    params = {
+        "key": os.getenv("PIXABAY_API_KEY"),
+        "q": "nature",          # or other keyword
+        "per_page": 1
+    }
+    r = requests.get(url, params=params)
     r.raise_for_status()
-    video_url = r.json()["videos"][0]["video_files"][0]["link"]
-    print("\n🎥 VIDEO LINK:\n", video_url)
+    result = r.json()
+    video_files = result["hits"][0]["videos"]
+    # pick one video file (e.g. first)
+    video_url = video_files[0]["url"]
     return video_url
 
 # === STEP 3: Simulate caption or upload stage (to be replaced later) ===
