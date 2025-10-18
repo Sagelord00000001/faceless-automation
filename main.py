@@ -150,6 +150,7 @@ import subprocess
 from flask import Flask, jsonify
 import imageio_ffmpeg as ffmpeg
 from shlex import quote
+FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
 
 ffmpeg_path = ffmpeg.get_ffmpeg_exe()
@@ -237,21 +238,56 @@ def get_local_music():
     chosen = random.choice(tracks)
     return os.path.join(music_folder, chosen)
 
-def generate_final_video(video_file, music_file, script_text, output_file):
+# def generate_final_video(video_file, music_file, script_text, output_file):
 
+#     from shlex import quote
+
+#     # Extract a short, safe overlay (first line or title)
+#     first_line = script_text.split("\n")[0]
+#     short_text = first_line[:80]  # keep it short
+#     safe_text = short_text.replace("'", "’").replace('"', '').replace(':', '-').replace('*', '')
+    
+#     vf_filter = f"scale=720:1280,drawtext=text={quote(safe_text)}:fontcolor=white:fontsize=32:x=(w-text_w)/2:y=h-th-60:box=1:boxcolor=black@0.5:boxborderw=5"
+
+#     # Ensure tmp folder exists
+#     os.makedirs("tmp", exist_ok=True)
+
+#     # FFmpeg command: scale to 720x1280, overlay text, add audio
+#     cmd = [
+#         ffmpeg_path,
+#         "-i", video_file,
+#         "-i", music_file,
+#         "-vf", vf_filter,
+#         "-c:a", "aac",
+#         "-shortest",
+#         output_file,
+#         "-y"
+#     ]
+#     print("\n🎥 Running FFmpeg to generate final video...")
+#     subprocess.run(cmd, check=True)
+#     print("✅ Final video created:", output_file)
+
+def generate_final_video(video_file, music_file, script_text, output_file):
     from shlex import quote
 
-    # Extract a short, safe overlay (first line or title)
+    # Extract short, safe text for overlay
     first_line = script_text.split("\n")[0]
-    short_text = first_line[:80]  # keep it short
-    safe_text = short_text.replace("'", "’").replace('"', '').replace(':', '-').replace('*', '')
-    
-    vf_filter = f"scale=720:1280,drawtext=text={quote(safe_text)}:fontcolor=white:fontsize=32:x=(w-text_w)/2:y=h-th-60:box=1:boxcolor=black@0.5:boxborderw=5"
+    short_text = first_line[:70]
+    safe_text = (
+        short_text.replace("'", "’")
+        .replace('"', "")
+        .replace(":", "-")
+        .replace("*", "")
+        .replace("[", "")
+        .replace("]", "")
+        .replace("\n", " ")
+        .strip()
+    )
 
-    # Ensure tmp folder exists
+    vf_filter = f"scale=720:1280,drawtext=fontfile={FONT_PATH}:text='{safe_text}':fontcolor=white:fontsize=36:x=(w-text_w)/2:y=h-th-100:box=1:boxcolor=black@0.5:boxborderw=8"
+
     os.makedirs("tmp", exist_ok=True)
 
-    # FFmpeg command: scale to 720x1280, overlay text, add audio
     cmd = [
         ffmpeg_path,
         "-i", video_file,
@@ -262,6 +298,7 @@ def generate_final_video(video_file, music_file, script_text, output_file):
         output_file,
         "-y"
     ]
+
     print("\n🎥 Running FFmpeg to generate final video...")
     subprocess.run(cmd, check=True)
     print("✅ Final video created:", output_file)
