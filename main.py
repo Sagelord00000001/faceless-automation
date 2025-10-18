@@ -236,14 +236,14 @@ def generate_final_video(video_file, music_file, script_text, output_file):
 
     # FFmpeg command: scale to 720x1280, overlay text, add audio
     cmd = [
-        "ffmpeg",
-        "-i", video_file,
-        "-i", music_file,
-        "-vf", f"scale=720:1280,drawtext=text='{script_text}':fontcolor=white:fontsize=30:x=10:y=10:box=1:boxcolor=black@0.5:boxborderw=5:wrap=1",
-        "-c:a", "aac",
-        "-shortest",
-        output_file,
-        "-y"
+        "./bin/ffmpeg",  # instead of just 'ffmpeg'
+    "-i", video_file,
+    "-i", music_file,
+    "-vf", f"scale=720:1280,drawtext=text='{script_text}':fontcolor=white:fontsize=30:x=10:y=10:box=1:boxcolor=black@0.5:boxborderw=5:wrap=1",
+    "-c:a", "aac",
+    "-shortest",
+    output_file,
+    "-y"
     ]
     print("\n🎥 Running FFmpeg to generate final video...")
     subprocess.run(cmd, check=True)
