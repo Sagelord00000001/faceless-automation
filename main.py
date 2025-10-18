@@ -457,7 +457,7 @@ def generate_final_video(video_file, music_file, script_text, output_file):
         ffmpeg_path,
         "-i", video_file,
         "-i", music_file,
-        "-t", "30",
+        "-t", "10",
         "-vf", vf_filter,
         "-c:a", "aac",
         "-shortest",
