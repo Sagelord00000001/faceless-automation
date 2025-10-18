@@ -449,14 +449,7 @@ def generate_final_video(video_file, music_file, script_text, output_file):
     first_line = script_text.split("\n")[0][:80]
     safe_text = clean_text(first_line)
 
-    vf_filter = (
-        f"scale=720:1280,"
-        f"drawtext=fontfile={FONT_PATH}:"
-        f"text='{safe_text}':"
-        f"fontcolor=white:fontsize=36:"
-        f"x=(w-text_w)/2:y=h-th-100:"
-        f"box=1:boxcolor=black@0.5:boxborderw=8"
-    )
+    vf_filter = "scale=720:1280"
 
     os.makedirs("tmp", exist_ok=True)
 
