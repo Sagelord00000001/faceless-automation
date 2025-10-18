@@ -239,22 +239,28 @@ def get_local_music():
 
 def generate_final_video(video_file, music_file, script_text, output_file):
 
-    safe_text = script_text.replace("'", "’").replace("\n", " ")
-    vf_filter = f"scale=720:1280,drawtext=text={quote(safe_text)}:fontcolor=white:fontsize=30:x=10:y=10:box=1:boxcolor=black@0.5:boxborderw=5:wrap=1"
+    from shlex import quote
+
+    # Extract a short, safe overlay (first line or title)
+    first_line = script_text.split("\n")[0]
+    short_text = first_line[:80]  # keep it short
+    safe_text = short_text.replace("'", "’").replace('"', '').replace(':', '-').replace('*', '')
+    
+    vf_filter = f"scale=720:1280,drawtext=text={quote(safe_text)}:fontcolor=white:fontsize=32:x=(w-text_w)/2:y=h-th-60:box=1:boxcolor=black@0.5:boxborderw=5"
 
     # Ensure tmp folder exists
     os.makedirs("tmp", exist_ok=True)
 
     # FFmpeg command: scale to 720x1280, overlay text, add audio
     cmd = [
-    ffmpeg_path,
-    "-i", video_file,
-    "-i", music_file,
-    "-vf", vf_filter,
-    "-c:a", "aac",
-    "-shortest",
-    output_file,
-    "-y"
+        ffmpeg_path,
+        "-i", video_file,
+        "-i", music_file,
+        "-vf", vf_filter,
+        "-c:a", "aac",
+        "-shortest",
+        output_file,
+        "-y"
     ]
     print("\n🎥 Running FFmpeg to generate final video...")
     subprocess.run(cmd, check=True)
