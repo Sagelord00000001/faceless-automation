@@ -149,6 +149,7 @@ import requests
 import subprocess
 from flask import Flask, jsonify
 import imageio_ffmpeg as ffmpeg
+from shlex import quote
 
 
 ffmpeg_path = ffmpeg.get_ffmpeg_exe()
@@ -237,6 +238,10 @@ def get_local_music():
     return os.path.join(music_folder, chosen)
 
 def generate_final_video(video_file, music_file, script_text, output_file):
+
+    safe_text = script_text.replace("'", "’").replace("\n", " ")
+    vf_filter = f"scale=720:1280,drawtext=text={quote(safe_text)}:fontcolor=white:fontsize=30:x=10:y=10:box=1:boxcolor=black@0.5:boxborderw=5:wrap=1"
+
     # Ensure tmp folder exists
     os.makedirs("tmp", exist_ok=True)
 
@@ -245,7 +250,7 @@ def generate_final_video(video_file, music_file, script_text, output_file):
     ffmpeg_path,
     "-i", video_file,
     "-i", music_file,
-    "-vf", f"scale=720:1280,drawtext=text='{script_text}':fontcolor=white:fontsize=30:x=10:y=10:box=1:boxcolor=black@0.5:boxborderw=5:wrap=1",
+    "-vf", vf_filter,
     "-c:a", "aac",
     "-shortest",
     output_file,
