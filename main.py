@@ -334,7 +334,7 @@ import shlex
 # ========================
 # GLOBAL CONFIG
 # ========================
-FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+FONT_PATH = "fonts/DejaVuSans-Bold.ttf"
 ffmpeg_path = ffmpeg.get_ffmpeg_exe()
 print("✅ Using FFmpeg:", ffmpeg_path)
 

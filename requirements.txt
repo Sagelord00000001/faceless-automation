@@ -4,3 +4,5 @@ requests
 openai
 ffmpeg-python
 imageio[ffmpeg]
+# Font dependency
+fonts/DejaVuSans-Bold.ttf
