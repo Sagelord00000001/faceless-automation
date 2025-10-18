@@ -148,17 +148,13 @@ import random
 import requests
 import subprocess
 from flask import Flask, jsonify
-ffmpeg_path = os.path.join(os.getcwd(), "bin", "ffmpeg")
+import imageio_ffmpeg as ffmpeg
 
-# 🔧 Make sure it's executable even on Render free tier
-if os.path.exists(ffmpeg_path):
-    try:
-        os.chmod(ffmpeg_path, 0o755)
-        print("✅ FFmpeg permission set successfully.")
-    except Exception as e:
-        print("⚠️ Could not set FFmpeg permission:", e)
 
-        
+ffmpeg_path = ffmpeg.get_ffmpeg_exe()
+print("Using FFmpeg:", ffmpeg_path)
+
+
 app = Flask(__name__)
 
 # ========================

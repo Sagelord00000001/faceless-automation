@@ -2,3 +2,5 @@ flask
 gunicorn
 requests
 openai
+ffmpeg-python
+imageio[ffmpeg]
