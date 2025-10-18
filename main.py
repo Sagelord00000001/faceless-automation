@@ -1,5 +1,12 @@
 import requests, os, time
 
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Server running..."
+
 # === STEP 1: Generate a short script from OpenRouter (DeepSeek or any model) ===
 def generate_script():
     url = "https://openrouter.ai/api/v1/chat/completions"
