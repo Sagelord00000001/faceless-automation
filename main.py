@@ -270,11 +270,15 @@ def get_local_music():
 def generate_final_video(video_file, music_file, script_text, output_file):
     from shlex import quote
 
-    # Extract short, safe text for overlay
+    # Use a standard font that exists in Render
+    FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+
+    # Extract and sanitize text
     first_line = script_text.split("\n")[0]
-    short_text = first_line[:70]
+    short_text = first_line[:80]
     safe_text = (
-        short_text.replace("'", "’")
+        short_text.encode("ascii", "ignore").decode()  # remove non-ASCII chars like ‘–’
+        .replace("'", "’")
         .replace('"', "")
         .replace(":", "-")
         .replace("*", "")
@@ -284,7 +288,14 @@ def generate_final_video(video_file, music_file, script_text, output_file):
         .strip()
     )
 
-    vf_filter = f"scale=720:1280,drawtext=fontfile={FONT_PATH}:text='{safe_text}':fontcolor=white:fontsize=36:x=(w-text_w)/2:y=h-th-100:box=1:boxcolor=black@0.5:boxborderw=8"
+    vf_filter = (
+        f"scale=720:1280,"
+        f"drawtext=fontfile={FONT_PATH}:"
+        f"text='{safe_text}':"
+        f"fontcolor=white:fontsize=36:"
+        f"x=(w-text_w)/2:y=h-th-100:"
+        f"box=1:boxcolor=black@0.5:boxborderw=8:fontconfig=enable"
+    )
 
     os.makedirs("tmp", exist_ok=True)
 
@@ -295,6 +306,7 @@ def generate_final_video(video_file, music_file, script_text, output_file):
         "-vf", vf_filter,
         "-c:a", "aac",
         "-shortest",
+        "-metadata:s:v:0", "handler_name='VideoHandler'",
         output_file,
         "-y"
     ]
