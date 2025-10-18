@@ -78,21 +78,26 @@ def home():
 # === STEP 1: Generate a short script from OpenRouter ===
 def generate_script():
     url = "https://openrouter.ai/api/v1/chat/completions"
-    headers = {"Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}"}
+    headers = {
+        "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
+        "Content-Type": "application/json",
+    }
     data = {
-        "model": "deepseek-chat",
+        "model": "deepseek/deepseek-chat",
         "messages": [
-            {
-                "role": "user",
-                "content": "Write a 30-second motivational script for a faceless video."
-            }
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": "Write a 15-second video caption about AI future."}
         ]
     }
-    r = requests.post(url, headers=headers, json=data)
-    r.raise_for_status()
-    msg = r.json()["choices"][0]["message"]["content"]
-    print("\n✅ SCRIPT GENERATED:\n", msg)
-    return msg
+    print("🔹 Sending request to OpenRouter...")
+    response = requests.post(url, headers=headers, json=data)
+    print("🔹 Status:", response.status_code)
+    print("🔹 Response:", response.text)
+
+    response.raise_for_status()
+    res_json = response.json()
+    script = res_json["choices"][0]["message"]["content"]
+    return script
 
 # === STEP 2: Fetch a free background clip from Pixabay ===
 def get_video_url_pixabay():
@@ -108,7 +113,6 @@ def get_video_url_pixabay():
     if not result["hits"]:
         raise Exception("No videos found!")
     first_hit = result["hits"][0]
-    # Get the highest quality link
     video_url = first_hit["videos"]["large"]["url"]
     return video_url
 
