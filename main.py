@@ -331,6 +331,7 @@ from flask import Flask, jsonify
 import imageio_ffmpeg as ffmpeg
 import shlex
 
+
 # ========================
 # GLOBAL CONFIG
 # ========================
@@ -454,16 +455,17 @@ def generate_final_video(video_file, music_file, script_text, output_file):
     os.makedirs("tmp", exist_ok=True)
 
     cmd = [
-        ffmpeg_path,
-        "-i", video_file,
-        "-i", music_file,
-        "-t", "10",
-        "-vf", vf_filter,
-        "-c:a", "aac",
-        "-shortest",
-        "-metadata:s:v:0", "handler_name=VideoHandler",
-        output_file,
-        "-y"
+    ffmpeg_path,
+    "-i", video_file,
+    "-i", music_file,
+    "-t", "10",
+    "-vf", "scale=720:1280",
+    "-c:v", "libx264",
+    "-c:a", "aac",
+    "-shortest",
+    "-metadata:s:v:0", "handler_name=VideoHandler",
+    output_file,
+    "-y"
     ]
 
     print("\n🎥 Running FFmpeg to generate final video...")
