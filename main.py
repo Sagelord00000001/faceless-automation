@@ -148,6 +148,7 @@ import random
 import requests
 import subprocess
 from flask import Flask, jsonify
+ffmpeg_path = os.path.join(os.getcwd(), "bin", "ffmpeg")
 
 app = Flask(__name__)
 
@@ -236,7 +237,7 @@ def generate_final_video(video_file, music_file, script_text, output_file):
 
     # FFmpeg command: scale to 720x1280, overlay text, add audio
     cmd = [
-        "./bin/ffmpeg",  # instead of just 'ffmpeg'
+    ffmpeg_path,
     "-i", video_file,
     "-i", music_file,
     "-vf", f"scale=720:1280,drawtext=text='{script_text}':fontcolor=white:fontsize=30:x=10:y=10:box=1:boxcolor=black@0.5:boxborderw=5:wrap=1",
