@@ -461,6 +461,7 @@ def generate_final_video(video_file, music_file, script_text, output_file):
     "-t", "10",
     "-vf", "scale=720:1280",
     "-c:v", "libx264",
+    "-preset", "ultrafast",
     "-c:a", "aac",
     "-shortest",
     "-metadata:s:v:0", "handler_name=VideoHandler",
